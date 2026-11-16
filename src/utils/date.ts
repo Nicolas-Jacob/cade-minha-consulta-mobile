@@ -21,3 +21,9 @@ export function isoToBrDate(value: string) {
   const [year, month, day] = value.slice(0, 10).split('-');
   return `${day}/${month}/${year}`;
 }
+
+/** Converte "yyyy-MM-ddTHH:mm:ss" em "dd/mm/aaaa às HH:mm" (a API já envia no horário de Brasília). */
+export function isoToBrDateTime(value: string) {
+  const time = value.slice(11, 16);
+  return time ? `${isoToBrDate(value)} às ${time}` : isoToBrDate(value);
+}
