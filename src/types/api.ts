@@ -95,7 +95,38 @@ export interface UsuarioUpdateRequest {
   endereco: EnderecoRequest;
 }
 
-export interface FilaCreateRequest {
+export interface EspecialidadeRequest {
+  /** máx. 50 caracteres */
+  nome: string;
+  /** máx. 200 caracteres */
+  descricao: string;
+}
+
+export interface UnidadeRequest {
+  /** máx. 100 caracteres */
+  nome: string;
+  telefone: string;
+  email?: string;
+  endereco: EnderecoRequest;
+  /** POST: padrão ATIVO; PUT: permite reativar */
+  status?: StatusAtivo;
+}
+
+export interface MedicoRequest {
+  nome: string;
+  sobrenome: string;
+  /** máx. 10 caracteres */
+  crm: string;
+  ufCrm: string;
+  /** mín. 1 */
+  idsEspecialidades: number[];
+  /** mín. 1 */
+  idsUnidades: number[];
+  /** POST: padrão ATIVO; PUT: permite reativar */
+  status?: StatusAtivo;
+}
+
+export interface FilaRequest {
   idEspecialidade: number;
   idUnidade: number;
 }
@@ -104,7 +135,7 @@ export interface FilaUpdateRequest {
   idUnidade: number;
 }
 
-export interface FilaPrioridadeRequest {
+export interface PrioridadeRequest {
   /** 1 a 5 */
   prioridade: number;
 }
