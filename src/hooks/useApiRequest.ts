@@ -33,5 +33,10 @@ export function useApiRequest<T>(request: () => Promise<T>) {
     void load();
   }, [load]);
 
-  return { ...state, reload: load };
+  /** Substitui os dados sem nova chamada (ex.: com o recurso devolvido por um PUT). */
+  const setData = useCallback((data: T) => {
+    setState({ data, loading: false, error: null });
+  }, []);
+
+  return { ...state, reload: load, setData };
 }
