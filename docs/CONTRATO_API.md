@@ -123,7 +123,7 @@ Legenda de papel: **pub** = público; **logado** = qualquer usuário autenticado
 | GET | `/api/especialidades` | logado | Paginado |
 | GET | `/api/especialidades/{id}` | logado | |
 | POST / PUT / DELETE | `/api/especialidades[/{id}]` | GES | CRUD |
-| GET | `/api/unidades` | logado | Paginado, só ATIVO para o CID, com endereço |
+| GET | `/api/unidades?especialidade=` | logado | Paginado, só ATIVO para o CID, com endereço. Com `especialidade`, devolve só as unidades que têm médico ATIVO dessa especialidade |
 | GET | `/api/unidades/{id}` | logado | |
 | POST / PUT / DELETE | `/api/unidades[/{id}]` | GES | DELETE = status INATIVO |
 | GET | `/api/medicos?especialidade=&unidade=` | GES | Paginado |
@@ -189,9 +189,11 @@ UsuarioUpdateRequest { nome: string; sobrenome: string; telefone: string; email?
                        endereco: RegisterRequest["endereco"] }
 EspecialidadeRequest { nome: string /* máx. 50 */; descricao: string /* máx. 200 */ }
 UnidadeRequest       { nome: string /* máx. 100 */; telefone: string; email?: string;
-                       endereco: RegisterRequest["endereco"] }
+                       endereco: RegisterRequest["endereco"];
+                       status?: "ATIVO" | "INATIVO" /* POST: padrão ATIVO; PUT: permite reativar */ }
 MedicoRequest        { nome: string; sobrenome: string; crm: string /* máx. 10 */; ufCrm: string;
-                       idsEspecialidades: number[] /* mín. 1 */; idsUnidades: number[] /* mín. 1 */ }
+                       idsEspecialidades: number[] /* mín. 1 */; idsUnidades: number[] /* mín. 1 */;
+                       status?: "ATIVO" | "INATIVO" /* POST: padrão ATIVO; PUT: permite reativar */ }
 FilaRequest          { idEspecialidade: number; idUnidade: number }
 FilaUpdateRequest    { idUnidade: number }
 PrioridadeRequest    { prioridade: number /* 1 a 5 */ }
