@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 
-import { Button, Card, EmptyState, ErrorMessage, Loading, Screen } from '@/components';
+import { Button, Card, EmptyState, ErrorMessage, InfoRow, Loading, Screen } from '@/components';
 import { useApiRequest } from '@/hooks/useApiRequest';
 import { useAuth } from '@/hooks/useAuth';
 import { usuarioService } from '@/services/usuarioService';
-import { colors, spacing, typography } from '@/theme';
+import { spacing, typography } from '@/theme';
 import type { UsuarioResponse } from '@/types/api';
 import { isoToBrDate } from '@/utils/date';
 import { maskCep, maskCpf, maskPhone } from '@/utils/masks';
@@ -15,18 +15,6 @@ function formatEndereco(endereco: UsuarioResponse['endereco']) {
   const { logradouro, numero, complemento, bairro, cidade, uf, cep } = endereco;
   const linha1 = `${logradouro}, ${numero}${complemento ? ` - ${complemento}` : ''}`;
   return `${linha1}\n${bairro}, ${cidade}/${uf}\nCEP ${maskCep(cep)}`;
-}
-
-function InfoRow({ label, value }: { label: string; value: string | null }) {
-  return (
-    <View
-      style={styles.infoRow}
-      accessible
-      accessibilityLabel={`${label}: ${value ?? 'não informado'}`}>
-      <Text style={styles.infoLabel}>{label}</Text>
-      <Text style={styles.infoValue}>{value ?? 'Não informado'}</Text>
-    </View>
-  );
 }
 
 export default function PerfilScreen() {
@@ -92,17 +80,6 @@ export default function PerfilScreen() {
 const styles = StyleSheet.create({
   name: {
     ...typography.title,
-  },
-  infoRow: {
-    gap: 2,
-    paddingVertical: spacing.xs,
-  },
-  infoLabel: {
-    ...typography.caption,
-  },
-  infoValue: {
-    ...typography.body,
-    color: colors.text,
   },
   actions: {
     gap: spacing.sm,
