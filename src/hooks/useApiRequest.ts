@@ -8,14 +8,25 @@ interface RequestState<T> {
   error: string | null;
 }
 
+interface ApiRequestOptions {
+  /**
+   * true (padrão): chama a API ao montar a tela.
+   * false: só chama quando `reload` for executado (ex.: ao tocar num botão).
+   */
+  immediate?: boolean;
+}
+
 /**
- * Executa uma chamada à API ao montar a tela e expõe loading, erro e recarga.
+ * Executa uma chamada à API e expõe loading, erro e recarga.
  * `request` deve ser estável (função de service ou useCallback).
  */
-export function useApiRequest<T>(request: () => Promise<T>) {
+export function useApiRequest<T>(
+  request: () => Promise<T>,
+  { immediate = true }: ApiRequestOptions = {},
+) {
   const [state, setState] = useState<RequestState<T>>({
     data: null,
-    loading: true,
+    loading: immediate,
     error: null,
   });
 
@@ -30,8 +41,8 @@ export function useApiRequest<T>(request: () => Promise<T>) {
   }, [request]);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    if (immediate) void load();
+  }, [immediate, load]);
 
   /** Substitui os dados sem nova chamada (ex.: com o recurso devolvido por um PUT). */
   const setData = useCallback((data: T) => {
