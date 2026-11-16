@@ -1,14 +1,18 @@
 export { Button } from './Button';
 export { Card } from './Card';
 export { CidadaoOnly } from './CidadaoOnly';
+export { ConsultaCard } from './ConsultaCard';
 export { EmptyState } from './EmptyState';
 export { ErrorMessage } from './ErrorMessage';
 export { FilaCard } from './FilaCard';
 export { FormSection } from './FormSection';
+export { IconText } from './IconText';
 export { InfoRow } from './InfoRow';
 export { Input } from './Input';
 export { Loading } from './Loading';
 export { OptionGroup } from './OptionGroup';
+export { PaginatedList } from './PaginatedList';
+export { ProximaConsultaCard } from './ProximaConsultaCard';
 export { Screen } from './Screen';
 export { SelectableList, type SelectableItem } from './SelectableList';
 export { StatusBadge } from './StatusBadge';

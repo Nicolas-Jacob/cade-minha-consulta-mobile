@@ -8,7 +8,9 @@ interface Option<T extends string> {
 }
 
 interface OptionGroupProps<T extends string> {
+  /** Lido pelo leitor de tela; também aparece na tela, a menos que `hideLabel` seja true. */
   label: string;
+  hideLabel?: boolean;
   options: Option<T>[];
   value: T | null;
   onChange: (value: T) => void;
@@ -18,6 +20,7 @@ interface OptionGroupProps<T extends string> {
 /** Escolha única entre poucas opções (equivalente acessível a um grupo de rádio). */
 export function OptionGroup<T extends string>({
   label,
+  hideLabel = false,
   options,
   value,
   onChange,
@@ -25,7 +28,7 @@ export function OptionGroup<T extends string>({
 }: OptionGroupProps<T>) {
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      {!hideLabel && <Text style={styles.label}>{label}</Text>}
       <View style={styles.row} accessibilityRole="radiogroup" accessibilityLabel={label}>
         {options.map((option) => {
           const selected = option.value === value;
