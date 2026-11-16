@@ -166,7 +166,7 @@ O cancelamento é confirmado mesmo se o RabbitMQ estiver fora do ar: nesse caso 
 | POST | `/api/gestor/agendamentos` | Body AgendamentoRequest. Chama `PRC_AGENDAR_CONSULTA`. 201 ConsultaResponse (com `paciente`) |
 | GET | `/api/gestor/consultas/proximas?dias=15` | Paginado. ConsultaResponse + contato do paciente |
 | PATCH | `/api/gestor/consultas/{id}/presenca` | Body PresencaRequest. Só para consultas AGENDADA ou CONFIRMADA cuja data já passou (senão 409). 200 ConsultaResponse |
-| GET | `/api/gestor/consultas/risco-falta?dias=15` | RiscoFaltaResponse. Enquanto o modelo de ML não estiver integrado, `risco` = null |
+| GET | `/api/gestor/consultas/risco-falta?dias=15` | **Exceção à paginação:** devolve um array simples de RiscoFaltaResponse, ordenado pela data da consulta. Enquanto o modelo de ML não estiver integrado, `risco` e `nivel` = null |
 
 ### Infra
 
@@ -226,8 +226,11 @@ ConsultaResponse     { id: number; idFila: number;
                        medico: { id: number; nome: string; crm: string };
                        unidade: { id: number; nome: string; endereco: string | null };
                        paciente?: { id: number; nome: string; telefone: string | null } /* só para o GES */ }
-OrientacaoResponse   { idConsulta: number; mensagem: string; geradoEm: string; aviso: string
-                       /* "Orientação gerada por IA. Não substitui a orientação médica." */ }
+OrientacaoResponse   { idConsulta: number; mensagem: string; geradoEm: string;
+                       origem: "IA" | "PADRAO" /* PADRAO = texto de reserva quando a IA está indisponível */;
+                       aviso: string
+                       /* IA: "Orientação gerada por IA. Não substitui a orientação médica."
+                          PADRAO: "Orientações gerais. Não substituem a orientação médica." */ }
 RiscoFaltaResponse   { idConsulta: number; paciente: string; dataHora: string; especialidade: string;
                        risco: number | null /* 0 a 1 */; nivel: "BAIXO" | "MEDIO" | "ALTO" | null }
 ```
@@ -257,6 +260,8 @@ RABBITMQ_HOST=localhost
 RABBITMQ_PORT=5672
 RABBITMQ_USERNAME=guest
 RABBITMQ_PASSWORD=guest
+# URL do serviço do modelo de risco de falta. Vazio = stub (risco null)
+RISCO_FALTA_URL=
 ```
 
 Mobile (`.env`):
