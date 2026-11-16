@@ -20,11 +20,11 @@ O app consome a API Java do projeto (`cade-minha-consulta-api`). O contrato entr
 
 ```
 src/
-  app/          rotas (Expo Router): (auth) login/cadastro e (app) área logada com abas
-  components/   componentes reutilizáveis (Button, Input, Card, Loading, ErrorMessage...)
+  app/          rotas (Expo Router): (auth) login/cadastro e (app) área logada com abas e telas de solicitação (fila/)
+  components/   componentes reutilizáveis (Button, Input, Card, Loading, ErrorMessage, FilaCard, SelectableList...)
   contexts/     AuthContext (sessão do usuário)
-  hooks/        useAuth, useApiRequest, useCepLookup, useCadastroForm
-  services/     instância axios, autenticação, usuário, ViaCEP, armazenamento do token
+  hooks/        useAuth, useApiRequest, usePaginatedList, useCepLookup, useCadastroForm
+  services/     instância axios, autenticação, usuário, solicitações (fila), catálogo, ViaCEP, armazenamento do token
   theme/        cores, tipografia e espaçamentos
   types/        tipos da API (DTOs do contrato)
   utils/        máscaras, validações, datas e tratamento de erros
