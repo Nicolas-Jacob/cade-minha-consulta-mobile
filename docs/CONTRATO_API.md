@@ -155,13 +155,17 @@ Regras do catálogo: excluir uma especialidade em uso (por médico ou fila) devo
 | PATCH | `/api/consultas/{id}/cancelar` | CID dono | AGENDADA/CONFIRMADA futura → CANCELADA; a fila vira CANCELADA; publica o evento `vaga.liberada` |
 | GET | `/api/consultas/{id}/orientacoes` | CID dono ou GES | Spring AI. Response OrientacaoResponse |
 
+`confirmar` e `cancelar` devolvem 200 com o ConsultaResponse atualizado. Consulta de outro cidadão: 403. Consulta inexistente: 404.
+
+O cancelamento é confirmado mesmo se o RabbitMQ estiver fora do ar: nesse caso a API registra o erro no log e a vaga não é realocada automaticamente. O evento `vaga.liberada` só é publicado depois do commit da transação.
+
 ### Gestor
 
 | Método | Rota | Regra |
 |---|---|---|
-| POST | `/api/gestor/agendamentos` | Body `{idMedico}`. Chama `PRC_AGENDAR_CONSULTA`. 201 ConsultaResponse |
+| POST | `/api/gestor/agendamentos` | Body AgendamentoRequest. Chama `PRC_AGENDAR_CONSULTA`. 201 ConsultaResponse (com `paciente`) |
 | GET | `/api/gestor/consultas/proximas?dias=15` | Paginado. ConsultaResponse + contato do paciente |
-| PATCH | `/api/gestor/consultas/{id}/presenca` | Body `{status: "PRESENTE" \| "FALTA"}`. Só para consultas cuja data já passou |
+| PATCH | `/api/gestor/consultas/{id}/presenca` | Body PresencaRequest. Só para consultas AGENDADA ou CONFIRMADA cuja data já passou (senão 409). 200 ConsultaResponse |
 | GET | `/api/gestor/consultas/risco-falta?dias=15` | RiscoFaltaResponse. Enquanto o modelo de ML não estiver integrado, `risco` = null |
 
 ### Infra
@@ -194,6 +198,8 @@ UnidadeRequest       { nome: string /* máx. 100 */; telefone: string; email?: s
 MedicoRequest        { nome: string; sobrenome: string; crm: string /* máx. 10 */; ufCrm: string;
                        idsEspecialidades: number[] /* mín. 1 */; idsUnidades: number[] /* mín. 1 */;
                        status?: "ATIVO" | "INATIVO" /* POST: padrão ATIVO; PUT: permite reativar */ }
+AgendamentoRequest   { idMedico: number }
+PresencaRequest      { status: "PRESENTE" | "FALTA" }
 FilaRequest          { idEspecialidade: number; idUnidade: number }
 FilaUpdateRequest    { idUnidade: number }
 PrioridadeRequest    { prioridade: number /* 1 a 5 */ }
