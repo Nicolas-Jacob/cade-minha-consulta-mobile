@@ -141,6 +141,8 @@ Legenda de papel: **pub** = público; **logado** = qualquer usuário autenticado
 | GET | `/api/filas?status=&especialidade=&unidade=` | GES | Paginado |
 | PATCH | `/api/filas/{id}/prioridade` | GES | Body `{prioridade}` (1 a 5) |
 
+Regras do catálogo: excluir uma especialidade em uso (por médico ou fila) devolve 409. Criar ou editar uma unidade grava também o contato e o endereço dela (TB_GS_UN_CONTATO_ENDERECO). POST de especialidade, unidade e médico devolve 201 com o recurso criado.
+
 `posicaoEstimada` = 1 + quantidade de filas AGUARDANDO na mesma especialidade e unidade com `data_entrada` anterior. É uma estimativa: a prioridade pode alterar a ordem real.
 
 ### Consultas
@@ -185,6 +187,14 @@ RegisterRequest      {
 }
 UsuarioUpdateRequest { nome: string; sobrenome: string; telefone: string; email?: string;
                        endereco: RegisterRequest["endereco"] }
+EspecialidadeRequest { nome: string /* máx. 50 */; descricao: string /* máx. 200 */ }
+UnidadeRequest       { nome: string /* máx. 100 */; telefone: string; email?: string;
+                       endereco: RegisterRequest["endereco"] }
+MedicoRequest        { nome: string; sobrenome: string; crm: string /* máx. 10 */; ufCrm: string;
+                       idsEspecialidades: number[] /* mín. 1 */; idsUnidades: number[] /* mín. 1 */ }
+FilaRequest          { idEspecialidade: number; idUnidade: number }
+FilaUpdateRequest    { idUnidade: number }
+PrioridadeRequest    { prioridade: number /* 1 a 5 */ }
 
 // Responses
 LoginResponse        { token: string; usuario: { id: number; nome: string; credencial: "CIDADAO" | "GESTOR" } }
