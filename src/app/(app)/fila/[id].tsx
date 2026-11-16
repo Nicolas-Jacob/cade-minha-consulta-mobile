@@ -5,7 +5,6 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 import {
   Button,
   Card,
-  CidadaoOnly,
   EmptyState,
   ErrorMessage,
   FormSection,
@@ -25,14 +24,6 @@ import { isoToBrDateTime } from '@/utils/date';
 import { textoPosicaoFila } from '@/utils/fila';
 
 export default function DetalheSolicitacaoScreen() {
-  return (
-    <CidadaoOnly>
-      <DetalheSolicitacao />
-    </CidadaoOnly>
-  );
-}
-
-function DetalheSolicitacao() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const filaId = Number(id);
   const request = useCallback(() => filaService.buscarPorId(filaId), [filaId]);

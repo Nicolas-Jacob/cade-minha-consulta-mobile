@@ -27,7 +27,8 @@ export default function RootLayout() {
 /**
  * Os dois grupos ficam sempre registrados, para que toda rota ("/", "/login"...) exista.
  * Quem decide o acesso são os layouts de cada grupo, que redirecionam conforme a sessão:
- * (app)/_layout manda para /login sem sessão; (auth)/_layout manda para "/" com sessão.
+ * (app)/_layout manda para /login sem sessão; (auth)/_layout manda, com sessão, para "/"
+ * (abas do cidadão) ou "/gestor" (abas do gestor).
  */
 function RootNavigator() {
   const { status } = useAuth();

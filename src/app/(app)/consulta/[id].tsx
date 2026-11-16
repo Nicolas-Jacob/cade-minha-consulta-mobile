@@ -3,9 +3,9 @@ import { useCallback } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 
 import {
+  Badge,
   Button,
   Card,
-  CidadaoOnly,
   EmptyState,
   ErrorMessage,
   InfoRow,
@@ -15,8 +15,10 @@ import {
   SuccessMessage,
 } from '@/components';
 import { useApiRequest } from '@/hooks/useApiRequest';
+import { useAuth } from '@/hooks/useAuth';
 import { useConsultaAcoes } from '@/hooks/useConsultaAcoes';
 import { consultaService } from '@/services/consultaService';
+import { orientacaoService } from '@/services/orientacaoService';
 import { colors, spacing, typography } from '@/theme';
 import type { ConsultaResponse } from '@/types/api';
 import {
@@ -26,16 +28,10 @@ import {
   textoDiasAteConsulta,
 } from '@/utils/consulta';
 import { abrirMapa } from '@/utils/maps';
+import { maskPhone } from '@/utils/masks';
 
+/** Detalhe da consulta, aberto pelo cidadão (dono) e pelo gestor. */
 export default function DetalheConsultaScreen() {
-  return (
-    <CidadaoOnly>
-      <DetalheConsulta />
-    </CidadaoOnly>
-  );
-}
-
-function DetalheConsulta() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const consultaId = Number(id);
   const request = useCallback(() => consultaService.buscarPorId(consultaId), [consultaId]);
@@ -64,11 +60,15 @@ interface DetalheConteudoProps {
 }
 
 function DetalheConteudo({ consulta, onUpdated }: DetalheConteudoProps) {
+  const { usuario } = useAuth();
   const acoes = useConsultaAcoes(onUpdated);
   const ativa = podeLiberarVaga(consulta.status);
+  // Confirmar e liberar a vaga são ações do dono da consulta; o gestor só acompanha.
+  const mostrarAcoesDoDono = ativa && usuario?.credencial === 'CIDADAO';
   // "Em X dias" só faz sentido enquanto a consulta ainda vai acontecer.
   const faltam = ativa ? textoDiasAteConsulta(consulta.diasAteConsulta) : null;
   const { endereco } = consulta.unidade;
+  const { paciente } = consulta;
 
   async function comoChegar(destino: string) {
     try {
@@ -94,6 +94,14 @@ function DetalheConteudo({ consulta, onUpdated }: DetalheConteudoProps) {
         {faltam && <Text style={styles.faltam}>{faltam}</Text>}
       </Card>
 
+      {/* O paciente só vem na resposta para o gestor. */}
+      {paciente && (
+        <Card>
+          <InfoRow label="Paciente" value={paciente.nome} />
+          <InfoRow label="Telefone" value={paciente.telefone && maskPhone(paciente.telefone)} />
+        </Card>
+      )}
+
       <Card>
         <InfoRow label="Médico(a)" value={consulta.medico.nome} />
         <InfoRow label="CRM" value={consulta.medico.crm} />
@@ -113,9 +121,11 @@ function DetalheConteudo({ consulta, onUpdated }: DetalheConteudoProps) {
         )}
       </Card>
 
+      {ativa && <OrientacoesConsulta consultaId={consulta.id} />}
+
       {acoes.erro && <ErrorMessage message={acoes.erro} />}
 
-      {ativa && (
+      {mostrarAcoesDoDono && (
         <View style={styles.actions}>
           {podeConfirmar(consulta.status) && (
             <Button
@@ -145,6 +155,47 @@ function DetalheConteudo({ consulta, onUpdated }: DetalheConteudoProps) {
   );
 }
 
+/**
+ * Orientações de preparo escritas pela IA. Só são buscadas quando a pessoa toca no botão,
+ * porque a geração do texto pode levar alguns segundos.
+ */
+function OrientacoesConsulta({ consultaId }: { consultaId: number }) {
+  const request = useCallback(() => orientacaoService.buscar(consultaId), [consultaId]);
+  const { data: orientacao, loading, error, reload } = useApiRequest(request, { immediate: false });
+
+  if (loading) return <Loading message="Preparando suas orientações..." />;
+  if (error) return <ErrorMessage message={error} onRetry={reload} />;
+  if (!orientacao) {
+    return (
+      <Button
+        title="Ver orientações para a consulta"
+        variant="secondary"
+        icon="reader-outline"
+        onPress={() => void reload()}
+        accessibilityHint="Mostra dicas de como se preparar para a consulta"
+      />
+    );
+  }
+
+  return (
+    <Card>
+      <Text style={styles.secao} accessibilityRole="header">
+        Orientações para a consulta
+      </Text>
+      {orientacao.origem === 'IA' && (
+        <Badge
+          label="Gerado por IA"
+          icon="sparkles-outline"
+          color={colors.neutral}
+          background={colors.neutralLight}
+        />
+      )}
+      <Text style={styles.orientacao}>{orientacao.mensagem}</Text>
+      <Text style={styles.aviso}>{orientacao.aviso}</Text>
+    </Card>
+  );
+}
+
 const styles = StyleSheet.create({
   titulo: {
     ...typography.title,
@@ -155,6 +206,18 @@ const styles = StyleSheet.create({
   faltam: {
     ...typography.bodyBold,
     color: colors.primary,
+  },
+  secao: {
+    ...typography.subtitle,
+  },
+  orientacao: {
+    ...typography.body,
+  },
+  aviso: {
+    ...typography.caption,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    paddingTop: spacing.sm,
   },
   actions: {
     gap: spacing.sm,

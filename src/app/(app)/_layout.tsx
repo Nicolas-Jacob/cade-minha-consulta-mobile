@@ -19,6 +19,7 @@ export default function AppLayout() {
         contentStyle: { backgroundColor: colors.background },
       }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="gestor" options={{ headerShown: false }} />
       <Stack.Screen name="sobre" options={{ title: 'Sobre o app' }} />
       <Stack.Screen name="consulta/[id]" options={{ title: 'Detalhes da consulta' }} />
       <Stack.Screen name="fila/nova" options={{ title: 'Solicitar consulta' }} />

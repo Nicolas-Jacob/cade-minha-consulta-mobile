@@ -4,7 +4,6 @@ import { StyleSheet, Text } from 'react-native';
 
 import {
   Button,
-  CidadaoOnly,
   EmptyState,
   ErrorMessage,
   FormSection,
@@ -23,14 +22,6 @@ import { getErrorMessage } from '@/utils/apiError';
 import { normalizeSearch } from '@/utils/text';
 
 export default function NovaSolicitacaoScreen() {
-  return (
-    <CidadaoOnly>
-      <NovaSolicitacao />
-    </CidadaoOnly>
-  );
-}
-
-function NovaSolicitacao() {
   const [especialidade, setEspecialidade] = useState<EspecialidadeResponse | null>(null);
   const [idUnidade, setIdUnidade] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);

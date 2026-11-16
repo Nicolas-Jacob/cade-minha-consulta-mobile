@@ -5,7 +5,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import {
   Button,
   Card,
-  CidadaoOnly,
   EmptyState,
   ErrorMessage,
   Loading,
@@ -28,14 +27,6 @@ async function buscarProximaConsulta(): Promise<ConsultaResponse | null> {
 }
 
 export default function InicioScreen() {
-  return (
-    <CidadaoOnly>
-      <Inicio />
-    </CidadaoOnly>
-  );
-}
-
-function Inicio() {
   const { usuario } = useAuth();
   const { data: proxima, loading, error, reload, setData } = useApiRequest(buscarProximaConsulta);
   const acoes = useConsultaAcoes(setData);

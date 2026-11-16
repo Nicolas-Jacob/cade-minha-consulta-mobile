@@ -4,7 +4,6 @@ import { StyleSheet, View } from 'react-native';
 
 import {
   Button,
-  CidadaoOnly,
   EmptyState,
   ErrorMessage,
   FilaCard,
@@ -24,14 +23,6 @@ const SUCCESS_MESSAGES: Record<string, string> = {
 };
 
 export default function FilasScreen() {
-  return (
-    <CidadaoOnly>
-      <MinhasSolicitacoes />
-    </CidadaoOnly>
-  );
-}
-
-function MinhasSolicitacoes() {
   const lista = usePaginatedList(filaService.listarMinhas);
   const { items, loading, refreshing, error, refresh, retry } = lista;
 

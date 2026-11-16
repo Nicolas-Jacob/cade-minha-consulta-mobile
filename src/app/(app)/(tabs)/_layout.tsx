@@ -1,38 +1,18 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { Tabs } from 'expo-router';
-import type { ComponentProps } from 'react';
-import type { ColorValue } from 'react-native';
+import { Redirect, Tabs } from 'expo-router';
 
-import { colors, fonts, headerOptions } from '@/theme';
+import { tabIcon } from '@/components';
+import { useAuth } from '@/hooks/useAuth';
+import { tabsScreenOptions } from '@/theme';
+import { rotaInicial } from '@/utils/rotas';
 
-type IconName = ComponentProps<typeof Ionicons>['name'];
-
-function tabIcon(name: IconName, focusedName: IconName) {
-  function TabIcon({
-    color,
-    size,
-    focused,
-  }: {
-    color: ColorValue;
-    size: number;
-    focused: boolean;
-  }) {
-    return <Ionicons name={focused ? focusedName : name} size={size} color={color as string} />;
-  }
-  return TabIcon;
-}
-
+/** Abas do cidadão. O gestor tem abas próprias em /gestor. */
 export default function TabsLayout() {
+  const { usuario } = useAuth();
+
+  if (usuario?.credencial === 'GESTOR') return <Redirect href={rotaInicial(usuario.credencial)} />;
+
   return (
-    <Tabs
-      screenOptions={{
-        ...headerOptions,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textSecondary,
-        tabBarLabelStyle: { fontFamily: fonts.bold, fontSize: 12 },
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
-        sceneStyle: { backgroundColor: colors.background },
-      }}>
+    <Tabs screenOptions={tabsScreenOptions}>
       <Tabs.Screen
         name="index"
         options={{

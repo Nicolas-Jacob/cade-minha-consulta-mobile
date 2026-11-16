@@ -1,6 +1,6 @@
+export { Badge } from './Badge';
 export { Button } from './Button';
 export { Card } from './Card';
-export { CidadaoOnly } from './CidadaoOnly';
 export { ConsultaCard } from './ConsultaCard';
 export { EmptyState } from './EmptyState';
 export { ErrorMessage } from './ErrorMessage';
@@ -13,8 +13,10 @@ export { Loading } from './Loading';
 export { OptionGroup } from './OptionGroup';
 export { PaginatedList } from './PaginatedList';
 export { ProximaConsultaCard } from './ProximaConsultaCard';
+export { RiscoFaltaCard } from './RiscoFaltaCard';
 export { Screen } from './Screen';
 export { SelectableList, type SelectableItem } from './SelectableList';
 export { StatusBadge } from './StatusBadge';
 export { SuccessMessage } from './SuccessMessage';
+export { tabIcon } from './TabIcon';
 export { UnidadeSelector } from './UnidadeSelector';

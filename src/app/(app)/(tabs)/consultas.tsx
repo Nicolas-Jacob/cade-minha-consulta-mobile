@@ -2,7 +2,6 @@ import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
 
 import {
-  CidadaoOnly,
   ConsultaCard,
   EmptyState,
   ErrorMessage,
@@ -22,14 +21,6 @@ const PERIODOS: { value: PeriodoConsulta; label: string }[] = [
 ];
 
 export default function ConsultasScreen() {
-  return (
-    <CidadaoOnly>
-      <MinhasConsultas />
-    </CidadaoOnly>
-  );
-}
-
-function MinhasConsultas() {
   const [periodo, setPeriodo] = useState<PeriodoConsulta>('futuras');
 
   return (
