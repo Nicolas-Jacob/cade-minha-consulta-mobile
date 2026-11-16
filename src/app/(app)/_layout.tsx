@@ -20,6 +20,8 @@ export default function AppLayout() {
       }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="sobre" options={{ title: 'Sobre o app' }} />
+      <Stack.Screen name="fila/nova" options={{ title: 'Solicitar consulta' }} />
+      <Stack.Screen name="fila/[id]" options={{ title: 'Detalhes do pedido' }} />
     </Stack>
   );
 }
