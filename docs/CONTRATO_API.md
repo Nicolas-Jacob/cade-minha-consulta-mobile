@@ -21,7 +21,7 @@ Global Solution FIAP 2026/2, tema CitizenTech (ODS 3: Saúde e bem-estar).
 
 | Camada | Tecnologia |
 |---|---|
-| API | Java 21, Spring Boot, Spring Data JPA, Spring Security + JWT (auth0 java-jwt), Spring AI, RabbitMQ, springdoc-openapi, Actuator |
+| API | Java 21, Spring Boot 4, Spring Data JPA, Spring Security + JWT via OAuth2 Resource Server (JwtEncoder/JwtDecoder Nimbus, HS256), Lombok, Spring AI, RabbitMQ, springdoc-openapi, Actuator |
 | Banco | Oracle. O schema vem dos scripts em `/scripts`, NUNCA do Hibernate (`ddl-auto: none`) |
 | Mobile | React Native com Expo, Expo Router, TypeScript, axios, expo-secure-store |
 
@@ -78,8 +78,8 @@ Usuários de teste: `gestor` / `SenhaGestor2026` (GESTOR) e `cidadao` / `Senha12
 
 ## 4. Autenticação
 
-- `POST /api/auth/login` devolve um JWT (HS256). Validade: 8 horas.
-- Claims: `sub` = login, `id` = id_usuario, `credencial` = CIDADAO ou GESTOR.
+- `POST /api/auth/login` devolve um JWT (HS256), gerado com o `JwtEncoder` do Spring Security (OAuth2 Resource Server) e validado pelo `JwtDecoder`. Validade: 8 horas (`jwt.expiration-seconds: 28800`).
+- Claims: `sub` = login, `id` = id_usuario, `credencial` = CIDADAO ou GESTOR. Um `JwtAuthenticationConverter` transforma `credencial` na authority `ROLE_<credencial>`.
 - O mobile envia o token em todas as rotas protegidas: `Authorization: Bearer <token>`.
 - Uma resposta 401 no mobile faz logout e volta para a tela de login.
 - Roles no Spring: `ROLE_CIDADAO` e `ROLE_GESTOR`.
@@ -230,6 +230,7 @@ API (`.env`, lido com `spring.config.import=optional:file:.env[.properties]`):
 DB_URL=jdbc:oracle:thin:@HOST:1521:SID
 DB_USERNAME=
 DB_PASSWORD=
+# JWT_SECRET: mínimo de 32 caracteres (HS256)
 JWT_SECRET=
 AI_API_KEY=
 AI_BASE_URL=https://api.openai.com
