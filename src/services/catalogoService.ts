@@ -1,4 +1,4 @@
-import type { EspecialidadeResponse, Page, UnidadeResponse } from '@/types/api';
+import type { EspecialidadeResponse, MedicoResponse, Page, UnidadeResponse } from '@/types/api';
 
 import { api } from './api';
 
@@ -22,5 +22,13 @@ export const catalogoService = {
       params: { ...CATALOGO_PAGE, especialidade: idEspecialidade },
     });
     return response.data.content;
+  },
+
+  /** Só GESTOR. A API não filtra por status, então os inativos saem aqui. */
+  async listarMedicosAtivos() {
+    const response = await api.get<Page<MedicoResponse>>('/medicos', {
+      params: CATALOGO_PAGE,
+    });
+    return response.data.content.filter((medico) => medico.status === 'ATIVO');
   },
 };

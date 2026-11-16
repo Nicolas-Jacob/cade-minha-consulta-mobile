@@ -13,6 +13,7 @@ export type StatusConsulta = 'AGENDADA' | 'CONFIRMADA' | 'CANCELADA' | 'PRESENTE
 export type NivelRisco = 'BAIXO' | 'MEDIO' | 'ALTO';
 export type StatusPresenca = 'PRESENTE' | 'FALTA';
 export type PeriodoConsulta = 'futuras' | 'historico';
+export type OrigemOrientacao = 'IA' | 'PADRAO';
 
 // ---------- Formato padrão ----------
 
@@ -234,7 +235,9 @@ export interface OrientacaoResponse {
   idConsulta: number;
   mensagem: string;
   geradoEm: string;
-  /** "Orientação gerada por IA. Não substitui a orientação médica." */
+  /** PADRAO = texto de reserva quando a IA está indisponível */
+  origem: OrigemOrientacao;
+  /** Texto de aviso a exibir sempre (muda conforme a origem). */
   aviso: string;
 }
 
@@ -245,5 +248,6 @@ export interface RiscoFaltaResponse {
   especialidade: string;
   /** 0 a 1; null enquanto o modelo de ML não estiver integrado */
   risco: number | null;
+  /** null enquanto o modelo de ML não estiver integrado */
   nivel: NivelRisco | null;
 }
