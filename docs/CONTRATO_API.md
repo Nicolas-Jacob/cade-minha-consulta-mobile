@@ -233,7 +233,7 @@ DB_PASSWORD=
 # JWT_SECRET: mínimo de 32 caracteres (HS256)
 JWT_SECRET=
 AI_API_KEY=
-AI_BASE_URL=https://api.openai.com
+AI_BASE_URL=https://api.openai.com/v1
 AI_MODEL=gpt-4o-mini
 RABBITMQ_HOST=localhost
 RABBITMQ_PORT=5672
