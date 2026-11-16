@@ -1,6 +1,6 @@
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import {
   Button,
@@ -9,12 +9,13 @@ import {
   ErrorMessage,
   FilaCard,
   Loading,
+  PaginatedList,
   Screen,
   SuccessMessage,
 } from '@/components';
 import { usePaginatedList } from '@/hooks/usePaginatedList';
+import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
 import { filaService } from '@/services/filaService';
-import { colors, spacing } from '@/theme';
 
 /** Avisos recebidos pelo parâmetro `sucesso` ao voltar de outra tela. */
 const SUCCESS_MESSAGES: Record<string, string> = {
@@ -31,8 +32,8 @@ export default function FilasScreen() {
 }
 
 function MinhasSolicitacoes() {
-  const { items, loading, refreshing, loadingMore, error, refresh, loadMore, retry } =
-    usePaginatedList(filaService.listarMinhas);
+  const lista = usePaginatedList(filaService.listarMinhas);
+  const { items, loading, refreshing, error, refresh, retry } = lista;
 
   const { sucesso } = useLocalSearchParams<{ sucesso?: string }>();
   const [aviso, setAviso] = useState<string | null>(null);
@@ -50,15 +51,9 @@ function MinhasSolicitacoes() {
   }, [sucesso]);
 
   // Ao voltar para a aba (depois de criar, trocar unidade ou desistir), busca a lista de novo.
-  // O primeiro foco é ignorado porque o hook já faz a carga inicial. Ao sair, o aviso some.
-  const firstFocus = useRef(true);
-  useFocusEffect(
-    useCallback(() => {
-      if (firstFocus.current) firstFocus.current = false;
-      else void refresh();
-      return () => setAviso(null);
-    }, [refresh]),
-  );
+  // Ao sair, o aviso some.
+  const limparAviso = useCallback(() => setAviso(null), []);
+  useRefreshOnFocus(refresh, limparAviso);
 
   const solicitar = () => router.push('/fila/nova');
   const isEmpty = !loading && !refreshing && !error && items.length === 0;
@@ -78,39 +73,15 @@ function MinhasSolicitacoes() {
     }
 
     return (
-      <FlatList
-        data={items}
-        keyExtractor={(fila) => String(fila.id)}
-        renderItem={({ item }) => (
+      <PaginatedList
+        list={lista}
+        loadingMoreLabel="Carregando mais pedidos"
+        renderItem={(fila) => (
           <FilaCard
-            fila={item}
-            onPress={() => router.push({ pathname: '/fila/[id]', params: { id: item.id } })}
+            fila={fila}
+            onPress={() => router.push({ pathname: '/fila/[id]', params: { id: fila.id } })}
           />
         )}
-        style={styles.list}
-        contentContainerStyle={styles.listContent}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => void refresh()}
-            colors={[colors.primary]}
-            tintColor={colors.primary}
-          />
-        }
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.3}
-        ListFooterComponent={
-          <>
-            {loadingMore && (
-              <ActivityIndicator
-                color={colors.primary}
-                accessibilityLabel="Carregando mais pedidos"
-                style={styles.footerLoading}
-              />
-            )}
-            {error && <ErrorMessage message={error} onRetry={retry} />}
-          </>
-        }
       />
     );
   }
@@ -135,16 +106,6 @@ function MinhasSolicitacoes() {
 }
 
 const styles = StyleSheet.create({
-  list: {
-    flex: 1,
-  },
-  listContent: {
-    gap: spacing.md,
-    paddingBottom: spacing.md,
-  },
-  footerLoading: {
-    paddingVertical: spacing.md,
-  },
   footer: {
     marginTop: 'auto',
   },

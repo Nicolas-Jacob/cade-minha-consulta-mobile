@@ -7,6 +7,7 @@ import { isoToBrDate } from '@/utils/date';
 import { textoPosicaoFila } from '@/utils/fila';
 
 import { Card } from './Card';
+import { IconText } from './IconText';
 import { StatusBadge } from './StatusBadge';
 
 interface FilaCardProps {
@@ -34,14 +35,8 @@ export function FilaCard({ fila, onPress }: FilaCardProps) {
 
         <StatusBadge status={fila.status} />
 
-        <View style={styles.row}>
-          <Ionicons name="business-outline" size={18} color={colors.textSecondary} />
-          <Text style={styles.text}>{fila.unidade.nome}</Text>
-        </View>
-        <View style={styles.row}>
-          <Ionicons name="calendar-outline" size={18} color={colors.textSecondary} />
-          <Text style={styles.text}>Pedido em {dataEntrada}</Text>
-        </View>
+        <IconText icon="business-outline">{fila.unidade.nome}</IconText>
+        <IconText icon="calendar-outline">{`Pedido em ${dataEntrada}`}</IconText>
 
         {posicao && <Text style={styles.posicao}>{posicao}</Text>}
       </Card>
@@ -60,15 +55,6 @@ const styles = StyleSheet.create({
   },
   especialidade: {
     ...typography.subtitle,
-    flex: 1,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  text: {
-    ...typography.body,
     flex: 1,
   },
   posicao: {
