@@ -7,6 +7,9 @@ type Status = 'loading' | 'refreshing' | 'loadingMore' | 'idle';
 
 const DEFAULT_PAGE_SIZE = 10;
 
+/** Estado e ações devolvidos pelo hook (usado pelo componente PaginatedList). */
+export type PaginatedListState<T extends { id: number }> = ReturnType<typeof usePaginatedList<T>>;
+
 /**
  * Lista paginada (formato de página do Spring) com carga inicial, pull-to-refresh
  * e "carregar mais" ao chegar no fim da lista.
