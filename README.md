@@ -1,56 +1,78 @@
-# Welcome to your Expo app 👋
+# Cadê minha consulta — App mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo do projeto **Cadê minha consulta** (Global Solution FIAP 2026/2, tema CitizenTech, ODS 3 — Saúde e bem-estar).
 
-## Get started
+No SUS, cerca de 1 em cada 4 pacientes falta à consulta com especialista sem avisar, e a vaga que levou meses para sair é desperdiçada. Pelo app, o cidadão acompanha suas solicitações e consultas, confirma presença ou libera a vaga com um toque; quando uma vaga é liberada, o sistema agenda automaticamente o próximo paciente da fila.
 
-1. Install dependencies
+O app consome a API Java do projeto (`cade-minha-consulta-api`). O contrato entre os dois está em [docs/CONTRATO_API.md](docs/CONTRATO_API.md).
+
+## Stack
+
+- [Expo](https://expo.dev) + [Expo Router](https://docs.expo.dev/router/introduction/) (rotas por arquivos em `src/app`)
+- TypeScript
+- axios (chamadas HTTP)
+- expo-secure-store (token de acesso guardado com segurança no aparelho)
+- expo-font com a fonte Atkinson Hyperlegible (Google Fonts, licença OFL), criada para leitura fácil por pessoas com baixa visão
+- @expo/vector-icons (Ionicons)
+- ESLint + Prettier
+
+## Estrutura
+
+```
+src/
+  app/          rotas (Expo Router): (auth) login/cadastro e (app) área logada com abas
+  components/   componentes reutilizáveis (Button, Input, Card, Loading, ErrorMessage...)
+  contexts/     AuthContext (sessão do usuário)
+  hooks/        useAuth, useApiRequest, useCepLookup, useCadastroForm
+  services/     instância axios, autenticação, usuário, ViaCEP, armazenamento do token
+  theme/        cores, tipografia e espaçamentos
+  types/        tipos da API (DTOs do contrato)
+  utils/        máscaras, validações, datas e tratamento de erros
+assets/
+  fonts/        Atkinson Hyperlegible
+  images/       ícone e splash
+```
+
+## Como rodar
+
+Pré-requisitos: Node.js LTS, o app **Expo Go** no celular e a API rodando no seu computador.
+
+1. Instale as dependências:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Crie o arquivo `.env` a partir do exemplo e informe o endereço da API:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   ```
+   EXPO_PUBLIC_API_URL=http://192.168.0.10:8080
+   ```
+
+   | Variável              | Descrição                                                                                                                                                                                                                                                   |
+   | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `EXPO_PUBLIC_API_URL` | Endereço da API Java, **sem** `/api` no final. No celular, use o IP do computador na rede local (no Windows, veja com `ipconfig`); `localhost` não funciona, porque aponta para o próprio celular. Celular e computador precisam estar na mesma rede Wi-Fi. |
+
+   O `.env` não vai para o repositório. Depois de alterar o arquivo, reinicie o Expo com `npx expo start -c`.
+
+3. Inicie o app e leia o QR Code com o Expo Go:
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+Usuário de teste (criado pela carga do banco): `cidadao` / `Senha123`.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Scripts
 
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+| Comando                | O que faz                       |
+| ---------------------- | ------------------------------- |
+| `npm start`            | Inicia o Expo                   |
+| `npm run lint`         | ESLint                          |
+| `npm run format`       | Formata o código com Prettier   |
+| `npm run format:check` | Verifica a formatação           |
+| `npm run typecheck`    | Checagem de tipos do TypeScript |
