@@ -1,5 +1,4 @@
-import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import {
@@ -14,6 +13,7 @@ import {
 } from '@/components';
 import { usePaginatedList } from '@/hooks/usePaginatedList';
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
+import { useSuccessParam } from '@/hooks/useSuccessParam';
 import { filaService } from '@/services/filaService';
 
 /** Avisos recebidos pelo parâmetro `sucesso` ao voltar de outra tela. */
@@ -26,24 +26,10 @@ export default function FilasScreen() {
   const lista = usePaginatedList(filaService.listarMinhas);
   const { items, loading, refreshing, error, refresh, retry } = lista;
 
-  const { sucesso } = useLocalSearchParams<{ sucesso?: string }>();
-  const [aviso, setAviso] = useState<string | null>(null);
-
-  // Um novo valor de `sucesso` vira aviso (ajuste de estado durante o render, sem efeito).
-  const [ultimoSucesso, setUltimoSucesso] = useState<string | undefined>(undefined);
-  if (sucesso !== ultimoSucesso) {
-    setUltimoSucesso(sucesso);
-    if (sucesso) setAviso(SUCCESS_MESSAGES[sucesso] ?? null);
-  }
-
-  // Limpa o parâmetro para que o mesmo aviso possa aparecer de novo numa próxima vez.
-  useEffect(() => {
-    if (sucesso) router.setParams({ sucesso: undefined });
-  }, [sucesso]);
+  const { aviso, limparAviso } = useSuccessParam(SUCCESS_MESSAGES);
 
   // Ao voltar para a aba (depois de criar, trocar unidade ou desistir), busca a lista de novo.
   // Ao sair, o aviso some.
-  const limparAviso = useCallback(() => setAviso(null), []);
   useRefreshOnFocus(refresh, limparAviso);
 
   const solicitar = () => router.push('/fila/nova');
@@ -79,7 +65,7 @@ export default function FilasScreen() {
 
   return (
     <Screen>
-      {aviso && <SuccessMessage message={aviso} onDismiss={() => setAviso(null)} />}
+      {aviso && <SuccessMessage message={aviso} onDismiss={limparAviso} />}
       {renderContent()}
       {/* No estado vazio o próprio EmptyState já traz o botão de solicitar. */}
       {!isEmpty && (
