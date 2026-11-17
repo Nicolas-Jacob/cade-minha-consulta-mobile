@@ -4,7 +4,13 @@ import { setAuthToken, setUnauthorizedHandler } from '@/services/api';
 import { authService } from '@/services/authService';
 import { tokenStorage } from '@/services/tokenStorage';
 import { usuarioService } from '@/services/usuarioService';
-import type { LoginRequest, LoginResponse, RegisterRequest, UsuarioResumo } from '@/types/api';
+import type {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  UsuarioResponse,
+  UsuarioResumo,
+} from '@/types/api';
 import { isUnauthorized } from '@/utils/apiError';
 
 export type AuthStatus = 'loading' | 'signedOut' | 'signedIn';
@@ -15,6 +21,8 @@ export interface AuthContextValue {
   signIn: (data: LoginRequest) => Promise<void>;
   signUp: (data: RegisterRequest) => Promise<void>;
   signOut: () => Promise<void>;
+  /** Atualiza o usuário da sessão com os dados mais recentes da API (ex.: após editar o perfil). */
+  atualizarUsuario: (usuario: UsuarioResponse) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
@@ -35,6 +43,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthToken(token);
     setUsuario(novoUsuario);
     setStatus('signedIn');
+  }, []);
+
+  const atualizarUsuario = useCallback(async (me: UsuarioResponse) => {
+    const resumo: UsuarioResumo = { id: me.id, nome: me.nome, credencial: me.credencial };
+    await tokenStorage.saveUsuario(resumo);
+    setUsuario(resumo);
   }, []);
 
   const signIn = useCallback(
@@ -64,10 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setAuthToken(token);
       try {
-        const me = await usuarioService.getMe();
-        const resumo: UsuarioResumo = { id: me.id, nome: me.nome, credencial: me.credencial };
-        await tokenStorage.saveUsuario(resumo);
-        setUsuario(resumo);
+        await atualizarUsuario(await usuarioService.getMe());
         setStatus('signedIn');
       } catch (error) {
         const savedUsuario = await tokenStorage.getUsuario();
@@ -82,11 +93,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     void restoreSession();
-  }, [signOut]);
+  }, [signOut, atualizarUsuario]);
 
   const value = useMemo(
-    () => ({ status, usuario, signIn, signUp, signOut }),
-    [status, usuario, signIn, signUp, signOut],
+    () => ({ status, usuario, signIn, signUp, signOut, atualizarUsuario }),
+    [status, usuario, signIn, signUp, signOut, atualizarUsuario],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,14 +1,30 @@
 import { router } from 'expo-router';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 
-import { Button, Card, EmptyState, ErrorMessage, InfoRow, Loading, Screen } from '@/components';
+import {
+  Button,
+  Card,
+  EmptyState,
+  ErrorMessage,
+  InfoRow,
+  Loading,
+  Screen,
+  SuccessMessage,
+} from '@/components';
 import { useApiRequest } from '@/hooks/useApiRequest';
 import { useAuth } from '@/hooks/useAuth';
+import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
+import { useSuccessParam } from '@/hooks/useSuccessParam';
 import { usuarioService } from '@/services/usuarioService';
 import { spacing, typography } from '@/theme';
 import type { UsuarioResponse } from '@/types/api';
 import { isoToBrDate } from '@/utils/date';
 import { maskCep, maskCpf, maskPhone } from '@/utils/masks';
+
+/** Avisos recebidos pelo parâmetro `sucesso` ao voltar da edição. */
+const SUCCESS_MESSAGES: Record<string, string> = {
+  atualizado: 'Seus dados foram atualizados.',
+};
 
 function formatEndereco(endereco: UsuarioResponse['endereco']) {
   if (!endereco) return null;
@@ -20,6 +36,10 @@ function formatEndereco(endereco: UsuarioResponse['endereco']) {
 export default function PerfilScreen() {
   const { signOut } = useAuth();
   const { data: usuario, loading, error, reload } = useApiRequest(usuarioService.getMe);
+  const { aviso, limparAviso } = useSuccessParam(SUCCESS_MESSAGES);
+
+  // Ao voltar da edição (ou de outra tela), busca os dados de novo. Ao sair, o aviso some.
+  useRefreshOnFocus(reload, limparAviso);
 
   function confirmSignOut() {
     Alert.alert('Sair do aplicativo', 'Deseja mesmo sair? Você vai precisar entrar de novo.', [
@@ -29,7 +49,8 @@ export default function PerfilScreen() {
   }
 
   function renderContent() {
-    if (loading) return <Loading message="Carregando seus dados..." />;
+    // Na recarga ao voltar para a aba, os dados atuais continuam na tela até chegar a resposta.
+    if (loading && !usuario) return <Loading message="Carregando seus dados..." />;
     if (error) return <ErrorMessage message={error} onRetry={reload} />;
     if (!usuario) {
       return <EmptyState icon="person-outline" title="Não encontramos seus dados" />;
@@ -56,9 +77,18 @@ export default function PerfilScreen() {
 
   return (
     <Screen scroll>
+      {aviso && <SuccessMessage message={aviso} onDismiss={limparAviso} />}
       {renderContent()}
 
       <View style={styles.actions}>
+        {usuario && (
+          <Button
+            title="Editar dados"
+            icon="create-outline"
+            onPress={() => router.push('/perfil/editar')}
+            accessibilityLabel="Editar meus dados"
+          />
+        )}
         <Button
           title="Sobre o app"
           variant="secondary"
