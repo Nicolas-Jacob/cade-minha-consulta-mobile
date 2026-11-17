@@ -260,6 +260,9 @@ RABBITMQ_HOST=localhost
 RABBITMQ_PORT=5672
 RABBITMQ_USERNAME=guest
 RABBITMQ_PASSWORD=guest
+# Local: "/" e false. Nuvem (CloudAMQP): o vhost da instância e true (porta 5671)
+RABBITMQ_VIRTUAL_HOST=/
+RABBITMQ_SSL=false
 # URL do serviço do modelo de risco de falta. Vazio = stub (risco null)
 RISCO_FALTA_URL=
 ```
@@ -269,6 +272,8 @@ Mobile (`.env`):
 ```
 EXPO_PUBLIC_API_URL=http://SEU_IP_LOCAL:8080
 ```
+
+No build publicado (Firebase App Distribution), `EXPO_PUBLIC_API_URL` aponta para a API na nuvem, sempre em HTTPS (o Android bloqueia HTTP em builds de produção).
 
 ## 10. Telas do mobile
 
