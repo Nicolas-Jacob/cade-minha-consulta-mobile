@@ -20,3 +20,4 @@ export { StatusBadge } from './StatusBadge';
 export { SuccessMessage } from './SuccessMessage';
 export { tabIcon } from './TabIcon';
 export { UnidadeSelector } from './UnidadeSelector';
+export { ContatoSection, EnderecoSection, NomeFields } from './UsuarioFormFields';
