@@ -10,7 +10,7 @@ Aplicativo Android/iOS do projeto **Cadê minha consulta**: Global Solution FIAP
 | ----------------------- | ------------------------------------------------------------------------------------------------- |
 | Vídeo de demonstração   | LINK_VIDEO                                                                                        |
 | API Java (repositório)  | [Nicolas-Jacob/cade-minha-consulta-api](https://github.com/Nicolas-Jacob/cade-minha-consulta-api) |
-| API Java (deploy)       | LINK_DEPLOY_API                                                                                   |
+| API Java (deploy)       | https://cademinhaconsulta-rm564205.azurewebsites.net                                              |
 | Versão publicada (hash) | `HASH_PUBLICADO` (Firebase App Distribution, versão 1.0.0)                                        |
 
 ## Problema
@@ -34,21 +34,20 @@ O gestor da unidade de saúde usa o mesmo app para ver as próximas consultas, *
 
 ## Equipe
 
-| Nome   | RM   |
-| ------ | ---- |
-| NOME_1 | RM_1 |
-| NOME_2 | RM_2 |
-| NOME_3 | RM_3 |
+| Nome                           | RM       | Turma  |
+| ------------------------------ | -------- | ------ |
+| João Victor Vendrameto         | RM563665 | 2TDSPV |
+| Nicolas de Oliveira Jacob      | RM564205 | 2TDSPX |
+| Gabriel Ambrósio Saraiva       | RM566552 | 2TDSPV |
+| Vinicius Romaguera Cardozo     | RM562308 | 2TDSPX |
+| Yuri Fuzinatto Garzoli Barreto | RM561450 | 2TDSPX |
 
 > Os mesmos nomes aparecem na tela "Sobre o app" (lista `EQUIPE` em [src/utils/appInfo.ts](src/utils/appInfo.ts)).
 
 ## Declaração de uso de IA
 
-<!-- Preencha com o que a equipe realmente usou. -->
-
-- **Ferramentas usadas:** FERRAMENTAS_DE_IA
-- **Em quais partes:** PARTES_COM_APOIO_DE_IA
-- **Como o resultado foi revisado:** COMO_A_EQUIPE_REVISOU
+- **Claude (Anthropic):** apoio no planejamento da arquitetura, na geração de partes do código, na revisão de erros e na documentação.
+- Todo o código foi revisado, testado e integrado pela equipe, que entende e responde pelo funcionamento da solução.
 - **No produto:** a API usa IA generativa (Spring AI) para escrever as orientações de preparo. O app sempre mostra o aviso de que o texto não substitui a orientação médica.
 
 ## Funcionalidades
@@ -155,7 +154,7 @@ docs/
 ## Integração com a API Java
 
 - Repositório: https://github.com/Nicolas-Jacob/cade-minha-consulta-api
-- Deploy (Azure): LINK_DEPLOY_API
+- Deploy (Azure): https://cademinhaconsulta-rm564205.azurewebsites.net
 - O contrato (endpoints, DTOs, erros) está em [docs/CONTRATO_API.md](docs/CONTRATO_API.md), que é a fonte única da verdade.
 - O app lê o endereço da API de `EXPO_PUBLIC_API_URL`: o `.env` no desenvolvimento e o `eas.json` no build publicado (HTTPS).
 
@@ -231,9 +230,9 @@ O perfil `preview` do [eas.json](eas.json) gera um **APK** (`android.buildType: 
    eas init
    ```
 
-   Como a configuração é dinâmica (`app.config.js`), o EAS não consegue gravar o ID sozinho e mostra o `projectId`. Cole esse valor na constante `EAS_PROJECT_ID` do [app.config.js](app.config.js).
+   Como a configuração é dinâmica (`app.config.js`), o EAS não consegue gravar os valores sozinho. Eles já estão nas constantes `EAS_OWNER` e `EAS_PROJECT_ID` do [app.config.js](app.config.js).
 
-3. No [eas.json](eas.json), troque `URL_DA_API_NA_NUVEM` pela URL HTTPS da API no Azure (sem `/api` no final).
+3. O perfil `preview` do [eas.json](eas.json) já aponta `EXPO_PUBLIC_API_URL` para a API no Azure (https://cademinhaconsulta-rm564205.azurewebsites.net, sem `/api` no final).
 
 4. Faça o commit das mudanças. O hash exibido no app é o do commit usado no build.
 

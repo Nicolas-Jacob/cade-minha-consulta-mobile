@@ -3,13 +3,16 @@ import Constants from 'expo-constants';
 export interface Integrante {
   nome: string;
   rm: string;
+  turma: string;
 }
 
-/** Equipe do projeto, exibida na tela "Sobre o app". Preencha nome e RM de cada integrante. */
+/** Equipe do projeto, exibida na tela "Sobre o app". */
 export const EQUIPE: Integrante[] = [
-  { nome: 'NOME DO INTEGRANTE 1', rm: 'RM00000' },
-  { nome: 'NOME DO INTEGRANTE 2', rm: 'RM00000' },
-  { nome: 'NOME DO INTEGRANTE 3', rm: 'RM00000' },
+  { nome: 'João Victor Vendrameto', rm: 'RM563665', turma: '2TDSPV' },
+  { nome: 'Nicolas de Oliveira Jacob', rm: 'RM564205', turma: '2TDSPX' },
+  { nome: 'Gabriel Ambrósio Saraiva', rm: 'RM566552', turma: '2TDSPV' },
+  { nome: 'Vinicius Romaguera Cardozo', rm: 'RM562308', turma: '2TDSPX' },
+  { nome: 'Yuri Fuzinatto Garzoli Barreto', rm: 'RM561450', turma: '2TDSPX' },
 ];
 
 export const APP_NOME = Constants.expoConfig?.name ?? 'Cadê minha consulta';

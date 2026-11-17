@@ -9,7 +9,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "URL_DA_API_NA_NUVEM"
+        "EXPO_PUBLIC_API_URL": "https://cademinhaconsulta-rm564205.azurewebsites.net"
       }
     }
   }

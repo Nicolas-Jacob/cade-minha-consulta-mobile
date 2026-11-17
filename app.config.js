@@ -5,10 +5,11 @@ const { execSync } = require('node:child_process');
 const PRIMARY_COLOR = '#0B5CAD';
 
 /**
- * ID do projeto no Expo (EAS). Rode `eas init` uma vez e cole aqui o ID que ele mostrar.
- * Como esta configuração é dinâmica (.js), o EAS não consegue gravar o ID sozinho.
+ * Conta e ID do projeto no Expo (EAS), informados pelo `eas init`.
+ * Como esta configuração é dinâmica (.js), o EAS não consegue gravar esses valores sozinho.
  */
-const EAS_PROJECT_ID = '';
+const EAS_OWNER = 'nicolas-jacob';
+const EAS_PROJECT_ID = '9f812c41-adba-415b-a723-ad57b10d737e';
 
 /**
  * Hash curto do commit desta versão, exibido na tela "Sobre o app".
@@ -32,6 +33,7 @@ function getCommitHash() {
 module.exports = {
   name: 'Cadê minha consulta',
   slug: 'cade-minha-consulta-mobile',
+  owner: EAS_OWNER,
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
@@ -70,6 +72,6 @@ module.exports = {
   },
   extra: {
     commitHash: getCommitHash(),
-    ...(EAS_PROJECT_ID ? { eas: { projectId: EAS_PROJECT_ID } } : {}),
+    eas: { projectId: EAS_PROJECT_ID },
   },
 };

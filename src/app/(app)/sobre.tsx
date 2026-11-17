@@ -44,8 +44,8 @@ export default function SobreScreen() {
         </Text>
         {EQUIPE.map((integrante) => (
           <InfoRow
-            key={integrante.rm + integrante.nome}
-            label={integrante.rm}
+            key={integrante.rm}
+            label={`${integrante.rm} · Turma ${integrante.turma}`}
             value={integrante.nome}
           />
         ))}
