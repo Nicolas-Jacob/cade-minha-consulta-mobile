@@ -11,7 +11,7 @@ Aplicativo Android/iOS do projeto **Cadê minha consulta**: Global Solution FIAP
 | Vídeo de demonstração   | LINK_VIDEO                                                                                        |
 | API Java (repositório)  | [Nicolas-Jacob/cade-minha-consulta-api](https://github.com/Nicolas-Jacob/cade-minha-consulta-api) |
 | API Java (deploy)       | https://cademinhaconsulta-rm564205.azurewebsites.net                                              |
-| Versão publicada (hash) | `HASH_PUBLICADO` (Firebase App Distribution, versão 1.0.0)                                        |
+| Versão publicada (hash) | `6c567c8` (Firebase App Distribution, versão 1.0.0)                                        |
 
 ## Problema
 
@@ -253,4 +253,4 @@ O perfil `preview` do [eas.json](eas.json) gera um **APK** (`android.buildType: 
 3. Adicione os testadores (e-mail do professor e da equipe) e distribua a versão.
 4. Os testadores recebem o convite por e-mail e instalam pelo app Firebase App Tester.
 
-**Versão publicada:** 1.0.0, commit `HASH_PUBLICADO` (o mesmo que aparece em Perfil → Sobre o app no APK instalado).
+**Versão publicada:** 1.0.0, commit `6c567c8` (o mesmo que aparece em Perfil → Sobre o app no APK instalado).
