@@ -166,7 +166,7 @@ O cancelamento é confirmado mesmo se o RabbitMQ estiver fora do ar: nesse caso 
 | POST | `/api/gestor/agendamentos` | Body AgendamentoRequest. Chama `PRC_AGENDAR_CONSULTA`. 201 ConsultaResponse (com `paciente`) |
 | GET | `/api/gestor/consultas/proximas?dias=15` | Paginado. ConsultaResponse + contato do paciente |
 | PATCH | `/api/gestor/consultas/{id}/presenca` | Body PresencaRequest. Só para consultas AGENDADA ou CONFIRMADA cuja data já passou (senão 409). 200 ConsultaResponse |
-| GET | `/api/gestor/consultas/risco-falta?dias=15` | **Exceção à paginação:** devolve um array simples de RiscoFaltaResponse, ordenado pela data da consulta. Enquanto o modelo de ML não estiver integrado, `risco` e `nivel` = null |
+| GET | `/api/gestor/consultas/risco-falta?dias=15` | **Exceção à paginação:** devolve um array simples de RiscoFaltaResponse, ordenado pela data da consulta. `risco` e `nivel` vêm do serviço de IA do grupo (vaga-certa-ia) quando `RISCO_FALTA_URL` está configurada; sem configuração ou com o serviço indisponível, vêm null (a resposta continua 200) |
 
 ### Infra
 
