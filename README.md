@@ -8,10 +8,10 @@ Aplicativo Android/iOS do projeto **Cadê minha consulta**: Global Solution FIAP
 
 | Entrega                 | Link                                                                                              |
 | ----------------------- | ------------------------------------------------------------------------------------------------- |
-| Vídeo de demonstração   | LINK_VIDEO                                                                                        |
+| Vídeo de demonstração   | [youtu.be/NW2NinjyoBM](https://youtu.be/NW2NinjyoBM)                                              |
 | API Java (repositório)  | [Nicolas-Jacob/cade-minha-consulta-api](https://github.com/Nicolas-Jacob/cade-minha-consulta-api) |
 | API Java (deploy)       | https://cademinhaconsulta-rm564205.azurewebsites.net                                              |
-| Versão publicada (hash) | `6c567c8` (Firebase App Distribution, versão 1.0.0)                                        |
+| Versão publicada (hash) | `6c567c8` (Firebase App Distribution, versão 1.0.0)                                               |
 
 ## Problema
 
